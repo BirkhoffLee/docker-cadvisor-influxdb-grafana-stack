@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+  cadvisor:
+    image: google/cadvisor
+    container_name: cadvisor
+    privileged: true
+    ports: 
+      - 8080:8080
+    volumes: 
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /cgroup:/cgroup:ro
+
+  influxdb:
+    image: influxdb
+    container_name: influxdb
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "8090:8090"
+    env_file:
+      - 'env.influxdb'
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    env_file:
+      - 'env.grafana'
+    volumes:
+      - ./grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
